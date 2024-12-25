@@ -15,7 +15,7 @@
 ```bash
 pyhton bot.py
 ```
-Бот можно найти по ссылке [@museum_exhibits_bot](t.me/museum_exhibits_bot)
+Бот можно найти по ссылке [museum_exhibits_bot](https://t.me/museum_exhibits_bot)
 
 ### Команда
 Смолякова Евгения Владимировна  
