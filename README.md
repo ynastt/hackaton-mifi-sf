@@ -33,6 +33,14 @@ pip install -r requirements.txt
 ```
 
 #### Запуск контейнеров TODO
+Контенейр с базой данных postgres
+```bash
+docker-compose up -d service_db
+```
+Собрать образ
+```bash
+docker-compose build
+```
 ```bash
 pyhton bot.py
 ```

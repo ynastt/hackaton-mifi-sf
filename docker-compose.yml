@@ -1,0 +1,32 @@
+version: '3'
+
+services:     
+  service_db:
+    container_name: service-db-pg
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data  
+
+  # service_bot:
+  #   container_name: service_bot
+  #   image: service_bot:1.0.0
+  #   build: .
+  #   environment:
+  #     POSTGRES_HOST: service_db
+  #     POSTGRES_PORT: 5432
+  #     POSTGRES_USERNAME: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #     POSTGRES_DATABASE: postgres
+  #     POSTGRES_CONN_URL: postgres://postgres:postgres@service_db:5432/postgres
+  #   depends_on:
+  #     - service_db
+
+volumes:  
+  pgdata: {}
+    
