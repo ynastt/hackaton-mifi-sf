@@ -41,6 +41,7 @@ docker-compose up -d service_db
 ```bash
 docker-compose build
 ```
+Ручной способ запустить бота
 ```bash
 pyhton bot.py
 ```

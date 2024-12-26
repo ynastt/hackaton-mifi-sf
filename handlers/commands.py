@@ -2,6 +2,7 @@ from aiogram import Router, F, types, Bot
 from aiogram.filters import CommandStart
 
 from keyboards.for_exhibit import get_comment_and_photo_kb
+from database import connectDB
 
 router = Router() 
 
@@ -52,5 +53,11 @@ async def send_random_value(callback: types.CallbackQuery):
 @router.message(F.text)
 async def cmd_start(message: types.Message):
     # TODO: сохранить комментарий в базу
+    conn, cur = connectDB()
+    cur.execute("INSERT INTO comments(comment, exhibit_id) VALUES (%s, %d)", 
+                (F.text, ))
+    cur.close()
+    conn.commit()
+    conn.close()
     # TODO: добавить обработку комментария в модели, определяющей тональность текста
     await message.answer("Ответ модели с тональностью текста комментария")
