@@ -33,6 +33,14 @@ pip install -r requirements.txt
 ```
 
 #### Запуск контейнеров TODO
+Контенейр с базой данных postgres
+```bash
+docker-compose up -d service_db
+```
+Собрать образ
+```bash
+docker-compose build
+```
 ```bash
 pyhton bot.py
 ```
@@ -47,4 +55,4 @@ pyhton bot.py
 Яровикова Анастасия Сергеевна  [@ynastt](https://github.com/ynastt)  
 Серов Илья Алексеевич  [@EliSerov](https://github.com/EliSerov)  
 Мартынов Артем Васильевич [@martetten](https://github.com/martetten)  
-Игнатьева Анастасия Юрьевна []()  
+Игнатьева Анастасия Юрьевна [@AnastasiaIgn](https://github.com/AnastasiaIgn)  
