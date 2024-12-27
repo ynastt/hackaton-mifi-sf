@@ -25,8 +25,9 @@
 
 Для решения задачи по оптимизации процесса распознавания объекта по фото мы использовали модель YOLOv8-seg, предобученную на данных COCO v1.0. Основной акцент сделали на решении задачи Instance segmentation. Аннотацию визуальных данных произвели в CVAT, а далее выгрузили их в формате JSON COCO v1.0 и конвертировали в YOLO-формат.
 
-Для определения тональности текста комментариев пользователей мы использовали NLP-модель [cointegrated/rubert-tiny-sentiment-balanced](https://huggingface.co/cointegrated/rubert-tiny-sentiment-balanced).  
-TODO: дописать подробности
+Для определения тональности текста комментариев пользователей мы использовали NLP-модель [cointegrated/rubert-tiny-sentiment-balanced](https://huggingface.co/cointegrated/rubert-tiny-sentiment-balanced).
+Указанная предобученная модель была обучена на базе RuBERT на датасетах подготовленных [Сергеем Сметаниным](https://github.com/sismetanin/sentiment-analysis-in-russian). Фактически
+модель является классификатором на 3 категории: негативный текст, нейтральный и положительный.
 
 ## Реализация проекта
 **Стек технологий**:  
@@ -53,27 +54,22 @@ TODO: дописать подробности
 
 Пример записи в ```.env```:  
 ```text
-TGBOT_TOKEN = <API token>
+BOT_TOKEN = <API token>
 ```
 
-#### Установка необходимых пакетов (TODO убрать если это предусмотрено при сборке через докер)
-В корне проекта в терминале выполнить команду
+### Запуск
+Поднять все контейнеры
 ```bash
-pip install -r requirements.txt
+docker compose up -d
 ```
-
-### Запуск (TODO добавить команды)
-Контенейр с базой данных postgres
+Зайти в один из контейнеров приложения и запустить миграции
 ```bash
-docker-compose up -d service_db
+docker exec -ti service_bot bash
+alembic upgrade head
 ```
-Собрать образ
-```bash
-docker-compose build
+Заполнить данными таблицу с экспонатами, для корректной работы приложения и выйти из контейнера
 ```
-Ручной способ запустить бота
-```bash
-pyhton bot.py
+python app/fill_table.py
 ```
 
 ## Результат
