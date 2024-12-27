@@ -2,11 +2,11 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 # Клавиатура с инлайн кнопками
-def get_comment_and_photo_kb() -> InlineKeyboardMarkup:
+def get_comment_and_photo_kb(exhibit_id) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(
         text="Оставить комментарий",
-        callback_data="add_comment")
+        callback_data=f"add_comment_{exhibit_id}")
     )
     builder.add(InlineKeyboardButton(
         text="Загрузить новое фото",
