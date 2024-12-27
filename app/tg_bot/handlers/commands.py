@@ -10,6 +10,7 @@ from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 
 from app.armq.connection import channel_pool
+from app.tg_bot.keyboards.for_exhibit import get_comment_and_photo_kb
 from app.tg_bot.states.get_data_states import GetDataState
 from app.config_reader import config
 from app.database.cruds import DatabaseCRUDS
@@ -45,7 +46,6 @@ async def command_download_photo(message: types.Message, bot: Bot, db: DatabaseC
             routing_key=config.CV_QUEUE_NAME,
         )
     await message.answer("Ваша фотография принята в обработку")
-    # TODO: сделать ответ с результатом от модели
 
 
 # Хэндлер на кнопку "Оставить комментарий"
@@ -65,11 +65,18 @@ async def send_random_value(callback: types.CallbackQuery, db: DatabaseCRUDS, st
 
 
 # Хэндлер на кнопку "Посмотреть комментарии"
-@router.callback_query(F.data == "get_comments")
+@router.callback_query(lambda callback: re.search(r"get_comments_", callback.data))
 async def send_random_value(callback: types.CallbackQuery, db: DatabaseCRUDS, state: FSMContext):
     await callback.message.answer("Спсиок комментариев:")
-    # TODO: добавить вставку списка комментариев по экспонату из базы данных
-    await callback.answer()
+    exhibit_id = UUID(callback.data.split('_')[-1])
+    comments = await db.get_comments_by_exhibit_id(exhibit_id)
+    sent_mapping = {
+        0: "Негативный комментарий",
+        1: "Нейтральный комментарий",
+        2: "Положительный комментарий",
+    }
+    comments_string = '\n\n\n'.join([comment.comment + '\n' + sent_mapping[comment.sentiment] for comment in comments])
+    await callback.message.answer(comments_string, reply_markup=get_comment_and_photo_kb(exhibit_id))
 
 
 # Хэндлер на текстовое сообщения комментария пользователя

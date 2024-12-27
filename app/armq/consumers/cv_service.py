@@ -1,20 +1,18 @@
 import asyncio
 import json
-from uuid import UUID
 
 import aio_pika
 from aiogram import Bot
 
-from app.tg_bot.keyboards.for_exhibit import get_comment_and_photo_kb
-from app.tg_bot.keyboards.strings import negative_comment_answer, positive_comment_answer, neutral_comment_answer
 from app.config_reader import config
 from app.database.connection import session
 from app.database.cruds import DatabaseCRUDS
 from app.logs.logs import logging
 from app.services.yolo_service import YOLOClassifier
+from app.tg_bot.keyboards.for_exhibit import get_comment_and_photo_kb
 
 
-class Consumer:
+class CVConsumer:
     def __init__(self):
         self.photo_classifier = YOLOClassifier()
         TOKEN = config.BOT_TOKEN.get_secret_value()
@@ -44,7 +42,7 @@ class Consumer:
     async def photo_classify_task(
             self,
             message: aio_pika.abc.AbstractIncomingMessage,
-    ) -> None:
+    ):
         async with message.process(ignore_processed=True):
             async with session() as db:
                 crud_methods = DatabaseCRUDS(db)
@@ -56,23 +54,24 @@ class Consumer:
                     await self.bot.send_message(message_body_json['tg_id'],
                                                 'Произошла ошибка определения экспоната')
                     return
+                if model_res == '25':
+                    return await self.bot.send_message(message_body_json['tg_id'],
+                                                       'На вашем фото обнаружен объект живописи, '
+                                                       'который идентифицировать не удалось')
+                exhibit = await crud_methods.get_exhibit_by_label(model_res)
 
-                comment_id = UUID(message_body_json['comment_id'])
-                await crud_methods.update_comment_sentiment(comment_id, model_res)
-                if model_res == 0:
-                    await self.bot.send_message(message_body_json['tg_id'],
-                                                negative_comment_answer,
-                                                reply_markup=get_comment_and_photo_kb(message_body_json['exhibit_id']))
-                elif model_res == 1:
-                    await self.bot.send_message(message_body_json['tg_id'],
-                                                neutral_comment_answer,
-                                                reply_markup=get_comment_and_photo_kb(message_body_json['exhibit_id']))
-                else:
-                    await self.bot.send_message(message_body_json['tg_id'],
-                                                positive_comment_answer,
-                                                reply_markup=get_comment_and_photo_kb(message_body_json['exhibit_id']))
+                exhibit_info = f"""
+                
+                Экспонат: {exhibit.name}
+                
+                Описание: {exhibit.description}
+                
+                Подробнее на WIKI: {exhibit.wiki_link}"""
+
+                await self.bot.send_message(message_body_json['tg_id'], exhibit_info,
+                                            reply_markup=get_comment_and_photo_kb(exhibit.id))
 
 
 def start_consumers():
     logging.info(f'ARMQ_URL: {config.ARMQ_URL}')
-    Consumer()
+    CVConsumer()

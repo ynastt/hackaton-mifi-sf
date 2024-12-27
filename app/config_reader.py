@@ -57,6 +57,7 @@ class Settings(BaseSettings):
     # ML MODEL CONFIG
     NLP_MODEL_PATH: str | PathLike = BASE_DIR_FOR_ENV / 'app/app/models/rubert-tiny-sentiment-balanced.onnx'
     TOKENIZER_DIR_NAME: str | PathLike = BASE_DIR_FOR_ENV / 'app/app/tokenizers/sent_tokenizer'
+    YOLO_MODEL_PATH: str | PathLike = BASE_DIR_FOR_ENV / 'app/app/models/best.pt'
 
     model_config = SettingsConfigDict(env_file=BASE_DIR_FOR_ENV / '.env', env_file_encoding='utf-8', extra='allow')
 

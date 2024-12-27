@@ -24,3 +24,12 @@ class DatabaseCRUDS:
         await self.session.commit()
         await self.session.refresh(comment)
         return comment
+
+    async def get_exhibit_by_label(self, label: int) -> Exhibit:
+        exhibit = await self.session.execute(select(Exhibit).where(Exhibit.label == label))
+        return exhibit.scalars().first()
+
+
+    async def get_comments_by_exhibit_id(self, exhibit_id: UUID) -> Sequence[Comment]:
+        comments = await self.session.execute(select(Comment).where(Comment.exhibit_id == exhibit_id))
+        return comments.scalars().all()

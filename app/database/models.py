@@ -16,6 +16,8 @@ class Exhibit(Base):
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     name: Mapped[str] = mapped_column(nullable=False, unique=True)
     label: Mapped[str] = mapped_column(nullable=True)
+    description: Mapped[str] = mapped_column(nullable=True)
+    wiki_link: Mapped[str] = mapped_column(nullable=True)
     created_at: Mapped[datetime] = mapped_column(nullable=True, server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(nullable=True, onupdate=func.now())
 

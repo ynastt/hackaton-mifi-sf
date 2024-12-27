@@ -45,6 +45,20 @@ services:
       - .env
     restart: unless-stopped
 
+  cv_service:
+    container_name: cv_service
+    build: .
+    volumes:
+      - .:/app
+    networks:
+      - default
+    depends_on:
+      - rabbitmq
+    command: /bin/bash -c "python3 -m app.run_cv_service"
+    env_file:
+      - .env
+    restart: unless-stopped
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq

@@ -14,7 +14,7 @@ from app.logs.logs import logging
 from app.services.bert_service import BertClassifier
 
 
-class Consumer:
+class NLPConsumer:
     def __init__(self):
         self.comment_classifier = BertClassifier(config.NLP_MODEL_PATH, config.TOKENIZER_DIR_NAME)
         TOKEN = config.BOT_TOKEN.get_secret_value()
@@ -75,4 +75,4 @@ class Consumer:
 
 def start_consumers():
     logging.info(f'ARMQ_URL: {config.ARMQ_URL}')
-    Consumer()
+    NLPConsumer()

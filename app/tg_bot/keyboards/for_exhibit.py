@@ -14,7 +14,7 @@ def get_comment_and_photo_kb(exhibit_id) -> InlineKeyboardMarkup:
     )
     builder.add(InlineKeyboardButton(
         text="Посмотреть комментарии",
-        callback_data="get_comments")
+        callback_data=f"get_comments_{exhibit_id}")
     )
     builder.adjust(1)
     return builder.as_markup()
